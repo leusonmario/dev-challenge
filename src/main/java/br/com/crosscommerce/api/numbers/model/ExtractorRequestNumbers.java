@@ -38,17 +38,17 @@ public class ExtractorRequestNumbers {
     return inline;
   }
 
-  private List<Double> parseNumbers(String inline){
+  private List<Double> parseNumbers(String request) {
     List<Double> temporaryNumbers = new ArrayList<>();
     try {
+      HttpURLConnection connection = RequestSupporter.getConnection(request);
+      String inline = readJSONInfo(connection.getURL());
       JSONParser parse = new JSONParser();
       JSONObject data_obj = (JSONObject) parse.parse(inline);
       JSONArray jsonArray = new JSONArray();
 
       jsonArray.add(data_obj.get("numbers"));
       temporaryNumbers = (List<Double>) jsonArray.get(0);
-      if (temporaryNumbers.size() < 1)
-        throw new RuntimeException("No valid numbers were available");
     } catch (ParseException e) {
       e.printStackTrace();
     }
@@ -59,18 +59,28 @@ public class ExtractorRequestNumbers {
     return url + query + "?page=" + pageNumber;
   }
 
-  public List<Double> collectNumbers(){
+  public List<Double> collectNumbers() {
     List<Double> parsedNumbers = new ArrayList<>();
+    List<Double> numbersOfOnePage;
     int pageNumber = 1;
-    String request = adjustUrlForNumberPage(this.requestUrl, this.query, pageNumber);
-    while(RequestSupporter.isHttpConnectionAvailable(request)){
-      request = adjustUrlForNumberPage(this.requestUrl, this.query, pageNumber);
-      HttpURLConnection connection = RequestSupporter.getConnection(request);
-      String jsonInfo = readJSONInfo(connection.getURL());
-      parsedNumbers.addAll(parseNumbers(jsonInfo));
+    numbersOfOnePage = this.parseNumbers(adjustUrlForNumberPage(this.getRequestUrl(), this.getQuery(), pageNumber));
+
+    while(numbersOfOnePage.size() > 0) {
+      parsedNumbers.addAll(numbersOfOnePage);
       pageNumber++;
+      numbersOfOnePage.clear();
+      numbersOfOnePage = this.parseNumbers(
+          adjustUrlForNumberPage(this.getRequestUrl(), this.getQuery(), pageNumber));
     }
     return parsedNumbers;
+  }
+
+  public String getRequestUrl(){
+    return this.requestUrl;
+  }
+
+  public String getQuery(){
+    return this.query;
   }
 
 }

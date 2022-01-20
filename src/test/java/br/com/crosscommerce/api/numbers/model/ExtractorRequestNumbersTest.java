@@ -1,6 +1,5 @@
 package br.com.crosscommerce.api.numbers.model;
 
-import br.com.crosscommerce.api.numbers.util.MergeSort;
 import java.util.ArrayList;
 import java.util.List;
 import org.junit.Assert;
@@ -22,23 +21,21 @@ public class ExtractorRequestNumbersTest {
   }
 
   @Test
-  public void collectOrderedNumbersWithMockTest(){
+  public void returnEmptyArrayForInvalidQuery(){
     ExtractorRequestNumbers extractorRequestNumbers = Mockito.mock(ExtractorRequestNumbers.class);
-    List<Double> numbers = new ArrayList<>();
-    numbers.add(200.0);
-    numbers.add(157.0);
-    numbers.add(167.0);
-    Mockito.when(extractorRequestNumbers.collectNumbers()).thenReturn(numbers);
+    Mockito.when(extractorRequestNumbers.getRequestUrl()).thenReturn("http://challenge.dienekes.com.br/api/");
+    Mockito.when(extractorRequestNumbers.getQuery()).thenReturn("files");
     List<Double> returnedNumbers = extractorRequestNumbers.collectNumbers();
-    Assert.assertEquals(200.0, returnedNumbers.get(0).doubleValue(), 0.00001);
+    Assert.assertTrue(returnedNumbers.size() == 0);
   }
 
   @Test
-  public void collectOrderedNumbersTest(){
-    ExtractorRequestNumbers extractorRequestNumbers = new ExtractorRequestNumbers("http://challenge.dienekes.com.br/api/", "numbers");
+  public void returnEmptyArrayForInvalidURL(){
+    ExtractorRequestNumbers extractorRequestNumbers = Mockito.mock(ExtractorRequestNumbers.class);
+    Mockito.when(extractorRequestNumbers.getRequestUrl()).thenReturn("http://challenge.dienekes.com.br/api-two/");
+    Mockito.when(extractorRequestNumbers.getQuery()).thenReturn("query");
     List<Double> returnedNumbers = extractorRequestNumbers.collectNumbers();
-    MergeSort.mergeSort(returnedNumbers);
-    Assert.assertTrue(returnedNumbers.get(0) < returnedNumbers.get(1));
+    Assert.assertTrue(returnedNumbers.size() == 0);
   }
 
 }
