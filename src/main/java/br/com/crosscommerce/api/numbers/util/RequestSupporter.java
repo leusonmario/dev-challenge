@@ -19,6 +19,11 @@ public class RequestSupporter {
     return false;
   }
 
+  /***
+   * For a given url, it returns a connection object associated with a given url.
+   * @param requestUrl holds the target url
+   * @return a HttpURLConnection object
+   * */
   public static HttpURLConnection getConnection(String requestUrl){
     HttpURLConnection conn = null;
     try {

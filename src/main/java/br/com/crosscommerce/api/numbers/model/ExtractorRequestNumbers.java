@@ -21,6 +21,12 @@ public class ExtractorRequestNumbers {
     this.query = query;
   }
 
+  /***
+   * For a given url, the method collects all associated information and
+   * returns it as a string
+   * @param url holds the target page
+   * @return a string holding the information of the previous associated page
+  */
   private String readJSONInfo(URL url){
     String inline = "";
     Scanner scanner = null;
@@ -38,6 +44,12 @@ public class ExtractorRequestNumbers {
     return inline;
   }
 
+  /***
+   * For a given page request, the method parses and return a list of numbers (double)
+   * If any problem occurred during this process, an empty list is returned.
+   * @param request stands for the target page in request
+   * @return a list of numbers
+  */
   private List<Double> parseNumbers(String request) {
     List<Double> temporaryNumbers = new ArrayList<>();
     try {
@@ -59,6 +71,12 @@ public class ExtractorRequestNumbers {
     return url + query + "?page=" + pageNumber;
   }
 
+  /***
+   * This method extracts list of numbers based on a given url and query.
+   * Each list associated with a page is locally saved and later returned
+   * This process is interrupted when a list associated with a page has size zero.
+   * @return a list of numbers (double)
+   * */
   public List<Double> collectNumbers() {
     List<Double> parsedNumbers = new ArrayList<>();
     List<Double> numbersOfOnePage;
